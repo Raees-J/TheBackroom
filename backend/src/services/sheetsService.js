@@ -19,19 +19,43 @@ async function getClient() {
   }
 
   if (!config.google.serviceAccountEmail || !config.google.privateKey) {
+    logger.error('Google Sheets credentials not configured', {
+      hasEmail: !!config.google.serviceAccountEmail,
+      hasKey: !!config.google.privateKey,
+      keyLength: config.google.privateKey?.length
+    });
     throw new Error('Google Sheets credentials not configured');
   }
 
-  const auth = new google.auth.JWT({
-    email: config.google.serviceAccountEmail,
-    key: config.google.privateKey,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
+  try {
+    logger.info('Initializing Google Sheets client...', {
+      email: config.google.serviceAccountEmail,
+      keyPreview: config.google.privateKey.substring(0, 50) + '...'
+    });
 
-  sheetsClient = google.sheets({ version: 'v4', auth });
-  
-  logger.info('Google Sheets client initialized');
-  return sheetsClient;
+    const auth = new google.auth.JWT({
+      email: config.google.serviceAccountEmail,
+      key: config.google.privateKey,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+
+    // Test the auth by getting an access token
+    logger.info('Testing authentication...');
+    await auth.authorize();
+    logger.info('Authentication successful!');
+
+    sheetsClient = google.sheets({ version: 'v4', auth });
+    
+    logger.info('Google Sheets client initialized');
+    return sheetsClient;
+  } catch (error) {
+    logger.error('Failed to initialize Google Sheets client', {
+      error: error.message,
+      stack: error.stack,
+      code: error.code
+    });
+    throw error;
+  }
 }
 
 /**
