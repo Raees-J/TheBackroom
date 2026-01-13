@@ -55,8 +55,19 @@ router.post('/whatsapp', async (req, res) => {
     // Always respond 200 quickly to acknowledge receipt
     res.sendStatus(200);
 
+    logger.info('Webhook received', { body: JSON.stringify(req.body) });
+
     // Ensure spreadsheet is initialized
-    await ensureSpreadsheetInitialized();
+    try {
+      await ensureSpreadsheetInitialized();
+      logger.info('Spreadsheet initialization check complete');
+    } catch (initError) {
+      logger.error('FATAL: Spreadsheet initialization failed', { 
+        error: initError.message,
+        stack: initError.stack 
+      });
+      return;
+    }
 
     // Extract message data from webhook payload
     const messageData = whatsappService.extractMessageData(req.body);
@@ -71,30 +82,47 @@ router.post('/whatsapp', async (req, res) => {
       from: messageData.from,
       type: messageData.type,
       messageId: messageData.messageId,
+      text: messageData.text,
     });
 
     // Check if it's a voice note
     const isVoiceNote = messageData.type === 'audio' && messageData.audio?.voice;
 
     // Process the message
-    const result = await inventoryController.processMessage({
-      from: messageData.from,
-      messageId: messageData.messageId,
-      body: messageData.text,
-      isVoiceNote,
-      audioId: messageData.audio?.id,
-      audioMimeType: messageData.audio?.mimeType,
-      contactName: messageData.contactName,
-    });
+    try {
+      const result = await inventoryController.processMessage({
+        from: messageData.from,
+        messageId: messageData.messageId,
+        body: messageData.text,
+        isVoiceNote,
+        audioId: messageData.audio?.id,
+        audioMimeType: messageData.audio?.mimeType,
+        contactName: messageData.contactName,
+      });
 
-    // Send response back via WhatsApp Cloud API
-    await whatsappService.sendReply(
-      messageData.from,
-      result.message,
-      messageData.messageId
-    );
+      logger.info('Message processed successfully', { 
+        success: result.success,
+        message: result.message 
+      });
+
+      // Send response back via WhatsApp Cloud API
+      await whatsappService.sendReply(
+        messageData.from,
+        result.message,
+        messageData.messageId
+      );
+    } catch (processError) {
+      logger.error('FATAL: Message processing failed', { 
+        error: processError.message,
+        stack: processError.stack 
+      });
+      throw processError;
+    }
   } catch (error) {
-    logger.error('Error processing WhatsApp message', { error: error.message });
+    logger.error('Error processing WhatsApp message', { 
+      error: error.message,
+      stack: error.stack 
+    });
     
     // Try to send error response to user
     try {
