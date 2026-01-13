@@ -73,21 +73,18 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // ===========================================
-// SERVER STARTUP (only for local development)
+// SERVER STARTUP
 // ===========================================
 
-// Only start server if not in serverless environment (Vercel)
-if (process.env.VERCEL !== '1' && require.main === module) {
-  const PORT = config.port;
-  
-  app.listen(PORT, async () => {
-    logger.info(`🚀 The Backroom is running on port ${PORT}`);
-    logger.info(`📱 WhatsApp webhook: http://localhost:${PORT}/webhook/whatsapp`);
-    logger.info(`💚 Health check: http://localhost:${PORT}/health`);
-    logger.info(`🌍 Environment: ${config.nodeEnv}`);
-    logger.info(`🆓 FREE STACK: Gemini + WhatsApp Cloud + Local Whisper`);
-  });
-}
+const PORT = config.port;
 
-// Export for Vercel serverless
+app.listen(PORT, '0.0.0.0', async () => {
+  logger.info(`🚀 The Backroom is running on port ${PORT}`);
+  logger.info(`📱 WhatsApp webhook: http://localhost:${PORT}/webhook/whatsapp`);
+  logger.info(`💚 Health check: http://localhost:${PORT}/health`);
+  logger.info(`🌍 Environment: ${config.nodeEnv}`);
+  logger.info(`🆓 FREE STACK: Gemini + WhatsApp Cloud + Supabase`);
+});
+
+// Export for testing
 module.exports = app;

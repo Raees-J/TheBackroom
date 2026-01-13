@@ -33,12 +33,22 @@ CREATE INDEX IF NOT EXISTS idx_transactions_item_name ON transactions(item_name)
 ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 
--- Create policies to allow all operations (since this is a single-user app)
-CREATE POLICY "Allow all operations on inventory" ON inventory
-  FOR ALL USING (true) WITH CHECK (true);
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Allow all operations on inventory" ON inventory;
+DROP POLICY IF EXISTS "Allow all operations on transactions" ON transactions;
 
-CREATE POLICY "Allow all operations on transactions" ON transactions
-  FOR ALL USING (true) WITH CHECK (true);
+-- Create policies to allow all operations (since this is a single-user app)
+CREATE POLICY "Enable all access for inventory" ON inventory
+  FOR ALL 
+  TO anon, authenticated
+  USING (true) 
+  WITH CHECK (true);
+
+CREATE POLICY "Enable all access for transactions" ON transactions
+  FOR ALL 
+  TO anon, authenticated
+  USING (true) 
+  WITH CHECK (true);
 
 -- Insert a test item
 INSERT INTO inventory (name, quantity, unit, updated_by)
