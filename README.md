@@ -55,7 +55,7 @@ npm run dev
 | **Messaging** | WhatsApp Cloud API | ✅ Unlimited (Service Convos) |
 | **LLM** | Gemini 2.0 Flash-Lite | ✅ 1,500 RPD Free |
 | **Speech-to-Text** | Transformers.js + Whisper | ✅ Local CPU - Free |
-| **Storage** | Google Sheets API | ✅ 300 RPM Free |
+| **Storage** | Supabase PostgreSQL | ✅ 500MB Database Free |
 | **Deployment** | Vercel Hobby Tier | ✅ 1M requests Free |
 
 **Total Monthly Cost: $0** 🎉
@@ -64,9 +64,10 @@ npm run dev
 
 - **Natural Language Processing**: "Got 50 bottles of Coke"
 - **Voice Notes**: Transcribed locally with Whisper
-- **Real-time Updates**: Instant Google Sheets sync
-- **Transaction History**: Full audit trail
+- **Real-time Updates**: Instant Supabase database sync
+- **Transaction History**: Full audit trail in PostgreSQL
 - **South African English**: Understands local terms
+- **Fast & Reliable**: PostgreSQL database for instant queries
 
 ## 🚀 Deployment
 
