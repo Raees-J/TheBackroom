@@ -49,18 +49,25 @@ const TRANSACTION_HEADERS = ['Timestamp', 'Action', 'Item Name', 'Quantity', 'Un
  * Ensure the spreadsheet has the required sheets and headers
  */
 async function initializeSpreadsheet() {
+  logger.info('initializeSpreadsheet: Starting...');
   const sheets = await getClient();
   const spreadsheetId = config.google.spreadsheetId;
 
+  logger.info('initializeSpreadsheet: Got client and spreadsheet ID', { spreadsheetId });
+
   try {
     // Get existing sheets
+    logger.info('initializeSpreadsheet: Fetching existing sheets...');
     const spreadsheet = await sheets.spreadsheets.get({ spreadsheetId });
     const existingSheets = spreadsheet.data.sheets.map(s => s.properties.title);
+
+    logger.info('initializeSpreadsheet: Found existing sheets', { sheets: existingSheets });
 
     const requests = [];
 
     // Create Inventory sheet if missing
     if (!existingSheets.includes(SHEETS.INVENTORY)) {
+      logger.info('initializeSpreadsheet: Inventory sheet missing, will create');
       requests.push({
         addSheet: {
           properties: { title: SHEETS.INVENTORY },
@@ -70,6 +77,7 @@ async function initializeSpreadsheet() {
 
     // Create Transactions sheet if missing
     if (!existingSheets.includes(SHEETS.TRANSACTIONS)) {
+      logger.info('initializeSpreadsheet: Transactions sheet missing, will create');
       requests.push({
         addSheet: {
           properties: { title: SHEETS.TRANSACTIONS },
@@ -78,6 +86,7 @@ async function initializeSpreadsheet() {
     }
 
     if (requests.length > 0) {
+      logger.info('initializeSpreadsheet: Creating missing sheets...', { count: requests.length });
       await sheets.spreadsheets.batchUpdate({
         spreadsheetId,
         requestBody: { requests },
@@ -86,12 +95,17 @@ async function initializeSpreadsheet() {
     }
 
     // Add headers if sheets are empty
+    logger.info('initializeSpreadsheet: Ensuring headers...');
     await ensureHeaders(sheets, spreadsheetId, SHEETS.INVENTORY, INVENTORY_HEADERS);
     await ensureHeaders(sheets, spreadsheetId, SHEETS.TRANSACTIONS, TRANSACTION_HEADERS);
 
     logger.info('Spreadsheet initialized successfully');
   } catch (error) {
-    logger.error('Failed to initialize spreadsheet', { error: error.message });
+    logger.error('Failed to initialize spreadsheet', { 
+      error: error.message,
+      stack: error.stack,
+      code: error.code 
+    });
     throw error;
   }
 }

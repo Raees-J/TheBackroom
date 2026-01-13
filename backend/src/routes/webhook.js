@@ -16,13 +16,19 @@ let spreadsheetInitialized = false;
 async function ensureSpreadsheetInitialized() {
   if (!spreadsheetInitialized) {
     try {
+      logger.info('Starting spreadsheet initialization...');
       await sheetsService.initializeSpreadsheet();
       spreadsheetInitialized = true;
       logger.info('Spreadsheet initialized successfully');
     } catch (error) {
-      logger.error('Failed to initialize spreadsheet', { error: error.message });
+      logger.error('Failed to initialize spreadsheet', { 
+        error: error.message,
+        stack: error.stack 
+      });
       throw error;
     }
+  } else {
+    logger.info('Spreadsheet already initialized, skipping');
   }
 }
 
