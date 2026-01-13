@@ -62,12 +62,14 @@ async function findItem(itemName) {
       .from('inventory')
       .select('*')
       .ilike('name', `%${itemName}%`)
-      .limit(1)
-      .single();
+      .limit(1);
 
-    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
+    if (error) {
+      logger.error('Error finding item', { error: error.message });
+      throw error;
+    }
     
-    return data || null;
+    return data && data.length > 0 ? data[0] : null;
   } catch (error) {
     logger.error('Failed to find item', { error: error.message, itemName });
     return null;
@@ -105,12 +107,15 @@ async function upsertItem(item, userId) {
     logger.info('upsertItem: Starting', { itemName: item.name, quantity: item.quantity });
 
     // Check if item exists
+    logger.info('upsertItem: Checking if item exists...');
     const existing = await findItem(item.name);
+    logger.info('upsertItem: Find result', { found: !!existing });
 
     if (existing) {
       // Update existing item
       const newQuantity = existing.quantity + item.quantity;
       
+      logger.info('upsertItem: Updating existing item', { id: existing.id, newQuantity });
       const { data, error } = await client
         .from('inventory')
         .update({
@@ -120,10 +125,12 @@ async function upsertItem(item, userId) {
           updated_by: userId,
         })
         .eq('id', existing.id)
-        .select()
-        .single();
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        logger.error('upsertItem: Update failed', { error: error.message });
+        throw error;
+      }
 
       logger.info('Updated inventory item', {
         name: existing.name,
@@ -132,9 +139,10 @@ async function upsertItem(item, userId) {
         newQuantity,
       });
 
-      return data;
+      return data[0];
     } else {
       // Insert new item
+      logger.info('upsertItem: Inserting new item');
       const { data, error } = await client
         .from('inventory')
         .insert({
@@ -143,17 +151,19 @@ async function upsertItem(item, userId) {
           unit: item.unit || 'units',
           updated_by: userId,
         })
-        .select()
-        .single();
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        logger.error('upsertItem: Insert failed', { error: error.message, code: error.code });
+        throw error;
+      }
 
       logger.info('Added new inventory item', { name: item.name, quantity: item.quantity });
 
-      return data;
+      return data[0];
     }
   } catch (error) {
-    logger.error('Failed to upsert item', { error: error.message, item });
+    logger.error('Failed to upsert item', { error: error.message, stack: error.stack, item });
     throw error;
   }
 }
