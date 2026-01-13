@@ -63,17 +63,8 @@ router.post('/whatsapp', async (req, res) => {
 
     logger.info('Webhook received', { body: JSON.stringify(req.body) });
 
-    // Ensure spreadsheet is initialized
-    try {
-      await ensureSpreadsheetInitialized();
-      logger.info('Spreadsheet initialization check complete');
-    } catch (initError) {
-      logger.error('FATAL: Spreadsheet initialization failed', { 
-        error: initError.message,
-        stack: initError.stack 
-      });
-      return;
-    }
+    // Skip initialization for now - just try to write
+    logger.info('Skipping spreadsheet initialization, will try direct write');
 
     // Extract message data from webhook payload
     const messageData = whatsappService.extractMessageData(req.body);

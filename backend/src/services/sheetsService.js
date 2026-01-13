@@ -208,42 +208,15 @@ async function upsertItem(item, userId) {
   const timestamp = new Date().toISOString();
 
   try {
-    const existingItem = await findItem(item.name);
+    logger.info('upsertItem: Starting', { itemName: item.name, quantity: item.quantity });
 
-    if (existingItem) {
-      // Update existing item
-      const newQuantity = existingItem.quantity + item.quantity;
-      const range = `${SHEETS.INVENTORY}!A${existingItem.rowIndex}:E${existingItem.rowIndex}`;
-      
-      await sheets.spreadsheets.values.update({
-        spreadsheetId,
-        range,
-        valueInputOption: 'RAW',
-        requestBody: {
-          values: [[
-            existingItem.name,
-            newQuantity,
-            item.unit || existingItem.unit,
-            timestamp,
-            userId,
-          ]],
-        },
-      });
-
-      logger.info('Updated inventory item', {
-        name: existingItem.name,
-        oldQuantity: existingItem.quantity,
-        change: item.quantity,
-        newQuantity,
-      });
-
-      return { ...existingItem, quantity: newQuantity };
-    } else {
-      // Add new item
+    // Try to append directly - if sheet doesn't exist, it will fail and we'll create it
+    try {
       await sheets.spreadsheets.values.append({
         spreadsheetId,
         range: `${SHEETS.INVENTORY}!A:E`,
         valueInputOption: 'RAW',
+        insertDataOption: 'INSERT_ROWS',
         requestBody: {
           values: [[
             item.name.toLowerCase(),
@@ -255,12 +228,36 @@ async function upsertItem(item, userId) {
         },
       });
 
-      logger.info('Added new inventory item', { name: item.name, quantity: item.quantity });
+      logger.info('upsertItem: Successfully appended new item', { name: item.name });
+      return { name: item.name, quantity: item.quantity, unit: item.unit || 'units' };
+    } catch (appendError) {
+      logger.warn('upsertItem: Append failed, sheet might not exist', { error: appendError.message });
+      
+      // Sheet doesn't exist, create it
+      await initializeSpreadsheet();
+      
+      // Try again
+      await sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range: `${SHEETS.INVENTORY}!A:E`,
+        valueInputOption: 'RAW',
+        insertDataOption: 'INSERT_ROWS',
+        requestBody: {
+          values: [[
+            item.name.toLowerCase(),
+            item.quantity,
+            item.unit || 'units',
+            timestamp,
+            userId,
+          ]],
+        },
+      });
 
+      logger.info('upsertItem: Successfully appended after creating sheet', { name: item.name });
       return { name: item.name, quantity: item.quantity, unit: item.unit || 'units' };
     }
   } catch (error) {
-    logger.error('Failed to upsert item', { error: error.message, item });
+    logger.error('Failed to upsert item', { error: error.message, stack: error.stack, item });
     throw error;
   }
 }
