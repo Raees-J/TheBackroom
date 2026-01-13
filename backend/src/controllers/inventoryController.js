@@ -4,7 +4,8 @@
  */
 
 const geminiService = require('../services/geminiService');
-const transcriptionService = require('../services/transcriptionService');
+// Transcription disabled for serverless - use cloud STT service instead
+// const transcriptionService = require('../services/transcriptionService');
 const sheetsService = require('../services/sheetsService');
 const whatsappService = require('../services/whatsappService');
 const logger = require('../utils/logger');
@@ -23,10 +24,21 @@ async function processMessage(messageData) {
   try {
     let messageText = body;
 
+    // Handle voice notes - temporarily disabled for serverless
+    if (isVoiceNote && audioId) {
+      logger.warn('Voice notes not supported in serverless environment');
+      return {
+        success: false,
+        message: '🎤 Voice notes are currently not supported. Please send a text message instead.',
+      };
+    }
+    
+    /*
     // Handle voice notes - transcribe to text using local Whisper
     if (isVoiceNote && audioId) {
       logger.info('Transcribing voice note', { audioId });
       messageText = await handleVoiceNote(audioId, audioMimeType);
+    */
       
       if (!messageText) {
         return {

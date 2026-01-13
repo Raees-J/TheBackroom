@@ -12,7 +12,8 @@ const logger = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 const webhookRoutes = require('./routes/webhook');
 const healthRoutes = require('./routes/health');
-const transcriptionService = require('./services/transcriptionService');
+// Transcription disabled for serverless - use cloud STT service instead
+// const transcriptionService = require('./services/transcriptionService');
 
 const app = express();
 
