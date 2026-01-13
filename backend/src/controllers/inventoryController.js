@@ -51,9 +51,9 @@ async function processMessage(messageData) {
     }
 
     // Parse the message using Gemini AI
+    logger.info('About to call Gemini to parse message');
     const parsed = await geminiService.parseInventoryMessage(messageText);
-
-    logger.info('Message parsed', { action: parsed.action, confidence: parsed.confidence });
+    logger.info('Message parsed by Gemini', { action: parsed.action, confidence: parsed.confidence });
 
     // Handle low confidence
     if (parsed.confidence < 0.5 && parsed.action !== 'help') {
@@ -64,7 +64,9 @@ async function processMessage(messageData) {
     }
 
     // Execute the action
+    logger.info('About to execute action', { action: parsed.action });
     const result = await executeAction(parsed, userId);
+    logger.info('Action executed', { success: result.success });
 
     // Generate response message
     const responseMessage = geminiService.generateResponseMessage(result);
@@ -74,7 +76,7 @@ async function processMessage(messageData) {
       message: responseMessage,
     };
   } catch (error) {
-    logger.error('Error processing message', { error: error.message, userId });
+    logger.error('Error processing message', { error: error.message, stack: error.stack, userId });
     
     return {
       success: false,
