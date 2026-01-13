@@ -49,8 +49,6 @@ const config = {
   // Logging
   logLevel: process.env.LOG_LEVEL || 'info',
 };
-
-/**
  * Validate required configuration
  */
 function validateConfig() {
