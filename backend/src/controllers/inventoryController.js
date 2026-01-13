@@ -313,14 +313,19 @@ function parseSimple(message) {
   
   // Check for add/receive keywords
   if (lowerMsg.match(/add|added|got|received|bought|purchase/)) {
-    const match = message.match(/(\d+)\s*(\w+)?\s*(?:of\s+)?(.+)/i);
+    // Match patterns like "Added 30 screws" or "Got 10 boxes of nails"
+    const match = message.match(/(\d+)\s*(?:(\w+)\s+(?:of\s+)?)?(.+?)$/i);
     if (match) {
+      const quantity = parseInt(match[1]);
+      const unit = match[2] || 'units';
+      const name = match[3].trim();
+      
       return {
         action: 'add',
         items: [{
-          name: match[3].trim(),
-          quantity: parseInt(match[1]),
-          unit: match[2] || 'units',
+          name: name,
+          quantity: quantity,
+          unit: unit,
         }],
         confidence: 0.8,
       };
@@ -329,14 +334,18 @@ function parseSimple(message) {
   
   // Check for remove/sell keywords
   if (lowerMsg.match(/sold|sell|remove|used|took/)) {
-    const match = message.match(/(\d+)\s*(\w+)?\s*(?:of\s+)?(.+)/i);
+    const match = message.match(/(\d+)\s*(?:(\w+)\s+(?:of\s+)?)?(.+?)$/i);
     if (match) {
+      const quantity = parseInt(match[1]);
+      const unit = match[2] || 'units';
+      const name = match[3].trim();
+      
       return {
         action: 'remove',
         items: [{
-          name: match[3].trim(),
-          quantity: parseInt(match[1]),
-          unit: match[2] || 'units',
+          name: name,
+          quantity: quantity,
+          unit: unit,
         }],
         confidence: 0.8,
       };

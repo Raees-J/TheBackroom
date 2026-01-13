@@ -210,54 +210,46 @@ async function upsertItem(item, userId) {
   try {
     logger.info('upsertItem: Starting', { itemName: item.name, quantity: item.quantity });
 
-    // Try to append directly - if sheet doesn't exist, it will fail and we'll create it
-    try {
-      await sheets.spreadsheets.values.append({
-        spreadsheetId,
-        range: `${SHEETS.INVENTORY}!A:E`,
-        valueInputOption: 'RAW',
-        insertDataOption: 'INSERT_ROWS',
-        requestBody: {
-          values: [[
-            item.name.toLowerCase(),
-            item.quantity,
-            item.unit || 'units',
-            timestamp,
-            userId,
-          ]],
-        },
-      });
+    // Try to append directly with timeout
+    const appendPromise = sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: `${SHEETS.INVENTORY}!A:E`,
+      valueInputOption: 'RAW',
+      insertDataOption: 'INSERT_ROWS',
+      requestBody: {
+        values: [[
+          item.name.toLowerCase(),
+          item.quantity,
+          item.unit || 'units',
+          timestamp,
+          userId,
+        ]],
+      },
+    });
 
+    // Add 3 second timeout
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Sheets API timeout after 3s')), 3000)
+    );
+
+    try {
+      await Promise.race([appendPromise, timeoutPromise]);
       logger.info('upsertItem: Successfully appended new item', { name: item.name });
       return { name: item.name, quantity: item.quantity, unit: item.unit || 'units' };
     } catch (appendError) {
-      logger.warn('upsertItem: Append failed, sheet might not exist', { error: appendError.message });
-      
-      // Sheet doesn't exist, create it
-      await initializeSpreadsheet();
-      
-      // Try again
-      await sheets.spreadsheets.values.append({
-        spreadsheetId,
-        range: `${SHEETS.INVENTORY}!A:E`,
-        valueInputOption: 'RAW',
-        insertDataOption: 'INSERT_ROWS',
-        requestBody: {
-          values: [[
-            item.name.toLowerCase(),
-            item.quantity,
-            item.unit || 'units',
-            timestamp,
-            userId,
-          ]],
-        },
+      logger.error('upsertItem: Append failed', { 
+        error: appendError.message,
+        code: appendError.code,
+        stack: appendError.stack 
       });
-
-      logger.info('upsertItem: Successfully appended after creating sheet', { name: item.name });
-      return { name: item.name, quantity: item.quantity, unit: item.unit || 'units' };
+      throw appendError;
     }
   } catch (error) {
-    logger.error('Failed to upsert item', { error: error.message, stack: error.stack, item });
+    logger.error('Failed to upsert item', { 
+      error: error.message, 
+      stack: error.stack, 
+      item 
+    });
     throw error;
   }
 }
