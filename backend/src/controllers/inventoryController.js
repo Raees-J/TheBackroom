@@ -52,11 +52,8 @@ async function processMessage(messageData) {
 
     // Parse the message using Gemini AI
     logger.info('About to call Gemini to parse message');
-    
-    // TEMPORARY: Skip Gemini and use simple parsing for testing
-    logger.warn('Skipping Gemini, using simple regex parsing for testing');
-    const parsed = parseSimple(messageText);
-    logger.info('Message parsed with simple parser', { action: parsed.action, confidence: parsed.confidence });
+    const parsed = await geminiService.parseInventoryMessage(messageText);
+    logger.info('Message parsed by Gemini', { action: parsed.action, confidence: parsed.confidence });
 
     // Handle low confidence
     if (parsed.confidence < 0.5 && parsed.action !== 'help') {
@@ -302,60 +299,6 @@ async function handleListInventory(searchQuery) {
     action: 'list',
     success: true,
     data: inventory,
-  };
-}
-
-/**
- * Simple regex-based parser (fallback when Gemini unavailable)
- */
-function parseSimple(message) {
-  const lowerMsg = message.toLowerCase();
-  
-  // Check for add/receive keywords
-  if (lowerMsg.match(/add|added|got|received|bought|purchase/)) {
-    // Match patterns like "Added 30 screws" or "Got 10 boxes of nails"
-    const match = message.match(/(\d+)\s*(?:(\w+)\s+(?:of\s+)?)?(.+?)$/i);
-    if (match) {
-      const quantity = parseInt(match[1]);
-      const unit = match[2] || 'units';
-      const name = match[3].trim();
-      
-      return {
-        action: 'add',
-        items: [{
-          name: name,
-          quantity: quantity,
-          unit: unit,
-        }],
-        confidence: 0.8,
-      };
-    }
-  }
-  
-  // Check for remove/sell keywords
-  if (lowerMsg.match(/sold|sell|remove|used|took/)) {
-    const match = message.match(/(\d+)\s*(?:(\w+)\s+(?:of\s+)?)?(.+?)$/i);
-    if (match) {
-      const quantity = parseInt(match[1]);
-      const unit = match[2] || 'units';
-      const name = match[3].trim();
-      
-      return {
-        action: 'remove',
-        items: [{
-          name: name,
-          quantity: quantity,
-          unit: unit,
-        }],
-        confidence: 0.8,
-      };
-    }
-  }
-  
-  return {
-    action: 'unknown',
-    items: [],
-    confidence: 0,
   };
 }
 
