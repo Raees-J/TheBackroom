@@ -6,7 +6,7 @@
 const geminiService = require('../services/geminiService');
 // Transcription disabled for serverless - use cloud STT service instead
 // const transcriptionService = require('../services/transcriptionService');
-const sheetsService = require('../services/sheetsService');
+const supabaseService = require('../services/supabaseService');
 const whatsappService = require('../services/whatsappService');
 const logger = require('../utils/logger');
 
@@ -164,11 +164,11 @@ async function handleAddItems(items, userId) {
   const results = [];
 
   for (const item of items) {
-    const result = await sheetsService.upsertItem(item, userId);
+    const result = await supabaseService.upsertItem(item, userId);
     results.push(result);
 
     // Log transaction
-    await sheetsService.logTransaction({
+    await supabaseService.logTransaction({
       action: 'ADD',
       itemName: item.name,
       quantity: item.quantity,
@@ -198,11 +198,11 @@ async function handleRemoveItems(items, userId) {
 
   for (const item of items) {
     try {
-      const result = await sheetsService.removeItem(item, userId);
+      const result = await supabaseService.removeItem(item, userId);
       results.push(result);
 
       // Log transaction
-      await sheetsService.logTransaction({
+      await supabaseService.logTransaction({
         action: 'REMOVE',
         itemName: item.name,
         quantity: item.quantity,
@@ -237,7 +237,7 @@ async function handleRemoveItems(items, userId) {
 async function handleCheckStock(query) {
   if (!query) {
     // Return all inventory if no specific query
-    const inventory = await sheetsService.getInventory();
+    const inventory = await supabaseService.getInventory();
     return {
       action: 'check',
       success: true,
@@ -245,7 +245,7 @@ async function handleCheckStock(query) {
     };
   }
 
-  const items = await sheetsService.searchItems(query);
+  const items = await supabaseService.searchItems(query);
   
   return {
     action: 'check',
@@ -265,11 +265,11 @@ async function handleAdjustStock(items, userId) {
   const results = [];
 
   for (const item of items) {
-    const result = await sheetsService.setItemQuantity(item, userId);
+    const result = await supabaseService.setItemQuantity(item, userId);
     results.push(result);
 
     // Log transaction
-    await sheetsService.logTransaction({
+    await supabaseService.logTransaction({
       action: 'ADJUST',
       itemName: item.name,
       quantity: item.quantity,
@@ -293,9 +293,9 @@ async function handleListInventory(searchQuery) {
   let inventory;
   
   if (searchQuery) {
-    inventory = await sheetsService.searchItems(searchQuery);
+    inventory = await supabaseService.searchItems(searchQuery);
   } else {
-    inventory = await sheetsService.getInventory();
+    inventory = await supabaseService.getInventory();
   }
 
   return {

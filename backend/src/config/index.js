@@ -40,6 +40,12 @@ const config = {
     spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
   },
 
+  // Supabase (FREE: 500MB database, 1GB bandwidth)
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_ANON_KEY,
+  },
+
   // Logging
   logLevel: process.env.LOG_LEVEL || 'info',
 };
