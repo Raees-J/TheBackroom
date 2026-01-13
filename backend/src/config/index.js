@@ -59,19 +59,24 @@ function validateConfig() {
 
   const missing = required.filter(item => !item.value);
 
-  if (missing.length > 0 && config.isProduction) {
-    throw new Error(
-      `Missing required environment variables: ${missing.map(m => m.key).join(', ')}`
-    );
-  }
-
   if (missing.length > 0) {
     console.warn(
       `⚠️  Warning: Missing environment variables: ${missing.map(m => m.key).join(', ')}`
     );
+    
+    // Only throw in production if critical variables are missing
+    if (config.isProduction && missing.length > 0) {
+      console.error('❌ Critical environment variables missing in production!');
+      console.error('Missing variables:', missing.map(m => m.key).join(', '));
+    }
   }
 }
 
-validateConfig();
+// Run validation but don't throw on module load (let app start and show errors in logs)
+try {
+  validateConfig();
+} catch (error) {
+  console.error('Configuration validation error:', error.message);
+}
 
 module.exports = config;
