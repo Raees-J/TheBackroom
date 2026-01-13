@@ -76,7 +76,14 @@ async function parseInventoryMessage(message) {
 
     const prompt = `${SYSTEM_PROMPT}\n\nUser message: "${message}"\n\nRespond with JSON only:`;
 
-    const result = await client.generateContent({
+    logger.info('Calling Gemini API...');
+    
+    // Add timeout wrapper
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Gemini API timeout after 5s')), 5000)
+    );
+    
+    const apiPromise = client.generateContent({
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.1, // Low temperature for consistent parsing
@@ -84,6 +91,9 @@ async function parseInventoryMessage(message) {
         responseMimeType: 'application/json',
       },
     });
+
+    const result = await Promise.race([apiPromise, timeoutPromise]);
+    logger.info('Gemini API responded');
 
     const response = result.response;
     const content = response.text();
@@ -110,6 +120,7 @@ async function parseInventoryMessage(message) {
   } catch (error) {
     logger.error('Failed to parse inventory message', {
       error: error.message,
+      stack: error.stack,
       message,
     });
     
