@@ -32,21 +32,6 @@ async function processMessage(messageData) {
         message: '🎤 Voice notes are currently not supported. Please send a text message instead.',
       };
     }
-    
-    /*
-    // Handle voice notes - transcribe to text using local Whisper
-    if (isVoiceNote && audioId) {
-      logger.info('Transcribing voice note', { audioId });
-      messageText = await handleVoiceNote(audioId, audioMimeType);
-    */
-      
-      if (!messageText) {
-        return {
-          success: false,
-          message: "❌ Sorry, I couldn't understand that voice note. Please try again or send a text message.",
-        };
-      }
-    }
 
     // Handle empty messages
     if (!messageText || messageText.trim() === '') {
