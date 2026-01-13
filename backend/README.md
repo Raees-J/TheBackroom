@@ -15,9 +15,11 @@ The Backroom is a professional inventory management service that bridges "on-the
 | **LLM** | Gemini 2.0 Flash-Lite | ✅ 1,500 RPD Free |
 | **Speech-to-Text** | Transformers.js + Whisper | ✅ Local CPU - Free |
 | **Storage** | Supabase PostgreSQL | ✅ 500MB Database Free |
-| **Deployment** | Vercel Hobby Tier | ✅ 1M requests Free |
+| **Deployment** | Render.com Free Tier | ✅ 750 hours/month Free |
 
 **Total Monthly Cost: $0** 🎉
+
+> **⚠️ Current Setup:** Using Render.com free tier for MVP/testing. Service spins down after 15 min idle (30 sec cold start on first message). **Upgrade to Railway.app ($5/month) for always-on production** when you have paying clients.
 
 ## 🎯 Perfect For
 
@@ -201,19 +203,39 @@ npm run dev
 npm start
 ```
 
-### 5. Deploy to Vercel (FREE)
+### 5. Deploy to Render.com (FREE - No Card Required)
 
-```bash
-npm install -g vercel
-vercel
-```
+**Current Setup: Render.com Free Tier**
+- ✅ No credit card required
+- ✅ 750 hours/month free
+- ⚠️ Spins down after 15 min idle (30 sec cold start)
+- 💡 Upgrade to Railway.app ($5/month) for always-on when you have 5+ clients
 
-**Important**: Add environment variables in Vercel dashboard:
-1. Go to your project settings → Environment Variables
-2. Add `SUPABASE_URL` and `SUPABASE_ANON_KEY`
-3. Add `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_VERIFY_TOKEN`
-4. Add `GEMINI_API_KEY`
-5. Redeploy to apply changes
+**Deployment Steps:**
+
+1. Go to [Render.com](https://render.com/) and sign up with GitHub
+2. Click "New +" → "Web Service"
+3. Connect your GitHub repository
+4. Configure:
+   - **Name**: `the-backroom`
+   - **Root Directory**: `backend`
+   - **Environment**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Plan**: Select **Free**
+5. Add all environment variables (see `.env` file)
+6. Click "Create Web Service"
+7. Wait ~3 minutes for deployment
+8. Copy your URL: `https://the-backroom.onrender.com`
+
+**Update WhatsApp Webhook:**
+- Go to Meta Developer Console → WhatsApp → Configuration
+- Update webhook URL to: `https://your-app.onrender.com/webhook/whatsapp`
+- Verify and save
+
+**Important**: Add environment variables in Render dashboard:
+- All variables from your `.env` file
+- Make sure `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set
 
 ## 💬 Usage Examples
 

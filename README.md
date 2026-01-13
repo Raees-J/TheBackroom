@@ -56,9 +56,11 @@ npm run dev
 | **LLM** | Gemini 2.0 Flash-Lite | ✅ 1,500 RPD Free |
 | **Speech-to-Text** | Transformers.js + Whisper | ✅ Local CPU - Free |
 | **Storage** | Supabase PostgreSQL | ✅ 500MB Database Free |
-| **Deployment** | Vercel Hobby Tier | ✅ 1M requests Free |
+| **Deployment** | Render.com Free Tier | ✅ 750 hours/month Free |
 
 **Total Monthly Cost: $0** 🎉
+
+> **Note:** Currently using Render.com free tier (spins down after 15 min idle). Upgrade to Railway.app ($5/month) for always-on production when you have 5+ paying clients.
 
 ## 🎯 Features
 
