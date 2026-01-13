@@ -9,6 +9,22 @@ const config = require('../config');
 const logger = require('../utils/logger');
 const inventoryController = require('../controllers/inventoryController');
 const whatsappService = require('../services/whatsappService');
+const sheetsService = require('../services/sheetsService');
+
+// Initialize spreadsheet on first load
+let spreadsheetInitialized = false;
+async function ensureSpreadsheetInitialized() {
+  if (!spreadsheetInitialized) {
+    try {
+      await sheetsService.initializeSpreadsheet();
+      spreadsheetInitialized = true;
+      logger.info('Spreadsheet initialized successfully');
+    } catch (error) {
+      logger.error('Failed to initialize spreadsheet', { error: error.message });
+      throw error;
+    }
+  }
+}
 
 /**
  * GET /webhook/whatsapp
@@ -38,6 +54,9 @@ router.post('/whatsapp', async (req, res) => {
   try {
     // Always respond 200 quickly to acknowledge receipt
     res.sendStatus(200);
+
+    // Ensure spreadsheet is initialized
+    await ensureSpreadsheetInitialized();
 
     // Extract message data from webhook payload
     const messageData = whatsappService.extractMessageData(req.body);
