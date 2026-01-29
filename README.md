@@ -1,6 +1,6 @@
 # The Backroom - Monorepo
 
-AI-powered inventory management via WhatsApp with Google Sheets integration.
+AI-powered inventory management via WhatsApp with supabase integration.
 
 🆓 **100% FREE STACK** - No monthly costs!
 

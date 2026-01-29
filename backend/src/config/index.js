@@ -2,6 +2,9 @@
  * Central configuration module
  * Loads and validates all environment variables
  * 🆓 FREE STACK Configuration
+ * 
+ * SECURITY: All sensitive values MUST be loaded from environment variables
+ * NEVER hardcode API keys, secrets, or credentials in this file
  */
 
 require('dotenv').config();
@@ -12,6 +15,13 @@ const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   isDevelopment: process.env.NODE_ENV === 'development',
   isProduction: process.env.NODE_ENV === 'production',
+
+  // JWT Authentication
+  // SECURITY: JWT_SECRET must be set in production
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN || '30d',
+  },
 
   // WhatsApp Cloud API (FREE for service conversations)
   whatsapp: {
@@ -52,37 +62,56 @@ const config = {
 
 /**
  * Validate required configuration
+ * SECURITY: Ensures all critical environment variables are set
  */
 function validateConfig() {
   const required = [
-    { key: 'whatsapp.phoneNumberId', value: config.whatsapp.phoneNumberId },
-    { key: 'whatsapp.accessToken', value: config.whatsapp.accessToken },
-    { key: 'gemini.apiKey', value: config.gemini.apiKey },
-    { key: 'google.serviceAccountEmail', value: config.google.serviceAccountEmail },
-    { key: 'google.privateKey', value: config.google.privateKey },
-    { key: 'google.spreadsheetId', value: config.google.spreadsheetId },
+    { key: 'jwt.secret', value: config.jwt.secret, critical: true },
+    { key: 'whatsapp.phoneNumberId', value: config.whatsapp.phoneNumberId, critical: true },
+    { key: 'whatsapp.accessToken', value: config.whatsapp.accessToken, critical: true },
+    { key: 'whatsapp.verifyToken', value: config.whatsapp.verifyToken, critical: true },
+    { key: 'gemini.apiKey', value: config.gemini.apiKey, critical: true },
+    { key: 'supabase.url', value: config.supabase.url, critical: true },
+    { key: 'supabase.key', value: config.supabase.key, critical: true },
   ];
 
   const missing = required.filter(item => !item.value);
+  const criticalMissing = missing.filter(item => item.critical);
 
   if (missing.length > 0) {
     console.warn(
       `⚠️  Warning: Missing environment variables: ${missing.map(m => m.key).join(', ')}`
     );
-    
-    // Only throw in production if critical variables are missing
-    if (config.isProduction && missing.length > 0) {
-      console.error('❌ Critical environment variables missing in production!');
-      console.error('Missing variables:', missing.map(m => m.key).join(', '));
+  }
+
+  // Throw error in production if critical variables are missing
+  if (config.isProduction && criticalMissing.length > 0) {
+    const errorMsg = `❌ CRITICAL: Missing required environment variables in production: ${criticalMissing.map(m => m.key).join(', ')}`;
+    console.error(errorMsg);
+    throw new Error(errorMsg);
+  }
+
+  // Validate JWT secret strength in production
+  if (config.isProduction && config.jwt.secret) {
+    if (config.jwt.secret.length < 32) {
+      throw new Error('JWT_SECRET must be at least 32 characters in production');
     }
+  }
+
+  // Warn about default JWT secret in development
+  if (config.isDevelopment && !config.jwt.secret) {
+    console.warn('⚠️  WARNING: Using default JWT secret in development. Set JWT_SECRET environment variable.');
   }
 }
 
-// Run validation but don't throw on module load (let app start and show errors in logs)
+// Run validation
 try {
   validateConfig();
 } catch (error) {
   console.error('Configuration validation error:', error.message);
+  if (config.isProduction) {
+    process.exit(1); // Exit in production if config is invalid
+  }
 }
 
 module.exports = config;
