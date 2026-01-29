@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Bot, User, Loader2, ArrowLeft } from 'lucide-react'
+import { Send, Bot, UserCircle, Loader, ArrowLeft } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
 interface Message {
@@ -145,7 +145,7 @@ export default function SupportPage() {
                     }`}
                   >
                     {message.role === 'user' ? (
-                      <User className="w-5 h-5 text-brand-darker" />
+                      <UserCircle className="w-5 h-5 text-brand-darker" />
                     ) : (
                       <Bot className="w-5 h-5 text-brand-green" />
                     )}
@@ -183,7 +183,7 @@ export default function SupportPage() {
                   <Bot className="w-5 h-5 text-brand-green" />
                 </div>
                 <div className="glass rounded-2xl px-4 py-3">
-                  <Loader2 className="w-5 h-5 text-brand-green animate-spin" />
+                  <Loader className="w-5 h-5 text-brand-green animate-spin" />
                 </div>
               </div>
             </motion.div>

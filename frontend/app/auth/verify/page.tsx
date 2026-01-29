@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight, RefreshCw } from 'lucide-react'
+import { RotateCw, ArrowRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -209,7 +209,7 @@ export default function VerifyPage() {
                 onClick={handleResend}
                 className="text-brand-green hover:underline flex items-center justify-center space-x-2 mx-auto"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RotateCw className="w-4 h-4" />
                 <span>Resend code</span>
               </button>
             ) : (
