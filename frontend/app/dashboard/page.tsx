@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Box, TrendingUp as ChartUp, UserCircle, Download, LogOut, RotateCw } from 'lucide-react'
+import { Package, Activity, Users, Download, X, RefreshCcw } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -114,7 +114,7 @@ export default function DashboardPage() {
                 onClick={fetchData}
                 className="glass px-4 py-2 rounded-lg hover:border-brand-green/50 transition flex items-center space-x-2"
               >
-                <RotateCw className="w-4 h-4" />
+                <RefreshCcw className="w-4 h-4" />
                 <span className="hidden sm:inline">Refresh</span>
               </button>
               <button
@@ -128,7 +128,7 @@ export default function DashboardPage() {
                 onClick={handleLogout}
                 className="glass px-4 py-2 rounded-lg hover:border-red-500/50 transition flex items-center space-x-2 text-red-400"
               >
-                <LogOut className="w-4 h-4" />
+                <X className="w-4 h-4" />
                 <span className="hidden sm:inline">Logout</span>
               </button>
             </div>
@@ -145,7 +145,7 @@ export default function DashboardPage() {
             className="glass rounded-xl p-6 border border-white/10"
           >
             <div className="flex items-center justify-between mb-4">
-              <Box className="w-8 h-8 text-brand-green" />
+              <Package className="w-8 h-8 text-brand-green" />
               <span className="text-sm text-gray-400">Total Items</span>
             </div>
             <div className="text-3xl font-bold">{totalItems.toLocaleString()}</div>
@@ -158,7 +158,7 @@ export default function DashboardPage() {
             className="glass rounded-xl p-6 border border-white/10"
           >
             <div className="flex items-center justify-between mb-4">
-              <ChartUp className="w-8 h-8 text-brand-green" />
+              <Activity className="w-8 h-8 text-brand-green" />
               <span className="text-sm text-gray-400">SKUs</span>
             </div>
             <div className="text-3xl font-bold">{totalSKUs}</div>
@@ -171,7 +171,7 @@ export default function DashboardPage() {
             className="glass rounded-xl p-6 border border-white/10"
           >
             <div className="flex items-center justify-between mb-4">
-              <UserCircle className="w-8 h-8 text-brand-green" />
+              <Users className="w-8 h-8 text-brand-green" />
               <span className="text-sm text-gray-400">Transactions</span>
             </div>
             <div className="text-3xl font-bold">{transactions.length}</div>
