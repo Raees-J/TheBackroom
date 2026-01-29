@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Phone, ArrowRight, Shield } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
