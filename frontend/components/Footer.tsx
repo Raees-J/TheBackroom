@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { Terminal, Github, Twitter, Linkedin } from 'lucide-react'
 
 export default function Footer() {
   return (

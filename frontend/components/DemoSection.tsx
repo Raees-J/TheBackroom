@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { Mic, Check, Database } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import AnimatedCounter from './AnimatedCounter'
 

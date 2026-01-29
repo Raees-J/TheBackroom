@@ -1,8 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Sparkles, ArrowRight } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import AnimatedCounter from './AnimatedCounter'
 
 const phrases = [
   'Manage stock via WhatsApp.',

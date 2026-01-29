@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
+import { Send, Bot, User, Loader2, ArrowLeft } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
 interface Message {
