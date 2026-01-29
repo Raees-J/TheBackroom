@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Menu, X, Database, Shield, Zap, Terminal, MessageSquare, TrendingUp, ChevronDown } from 'lucide-react'
+import { Menu, X, Database, Shield, Zap, Terminal, MessageSquare, ChevronDown } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 const productDropdown = [
@@ -39,7 +39,7 @@ const solutionsDropdown = [
     href: '#whatsapp',
   },
   {
-    icon: TrendingUp,
+    icon: () => <span className="text-xl">📈</span>,
     title: 'Analytics',
     description: 'Track stock levels and trends',
     href: '#analytics',

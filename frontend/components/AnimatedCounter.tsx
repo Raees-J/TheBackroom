@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, useSpring, useTransform } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 interface AnimatedCounterProps {
@@ -29,49 +28,44 @@ export default function AnimatedCounter({
   decimals = 0,
   formatNumber = true
 }: AnimatedCounterProps) {
-  const [mounted, setMounted] = useState(false)
+  const [displayValue, setDisplayValue] = useState(0)
   
-  const spring = useSpring(value, {
-    damping: 30,
-    stiffness: 200,
-  })
-
-  // Handle SSR hydration
   useEffect(() => {
-    setMounted(true)
-    // Start animation after mount
-    const timeout = setTimeout(() => {
-      spring.set(value)
-    }, delay * 1000)
-
-    return () => clearTimeout(timeout)
-  }, [value, spring, delay])
-
-  const display = useTransform(spring, (current) => {
-    if (decimals > 0) {
-      return current.toFixed(decimals)
-    }
-    const rounded = Math.round(current)
-    if (formatNumber && rounded >= 1000) {
-      return formatLargeNumber(rounded)
-    }
-    return rounded.toString()
-  })
-
-  // Return static value during SSR to prevent hydration mismatch
-  if (!mounted) {
-    const staticValue = decimals > 0 
-      ? value.toFixed(decimals)
-      : formatNumber && value >= 1000
-        ? formatLargeNumber(value)
-        : value.toString()
+    const startTime = Date.now() + delay * 1000
+    const endTime = startTime + duration * 1000
     
-    return <span className={className} suppressHydrationWarning>{staticValue}</span>
-  }
+    const animate = () => {
+      const now = Date.now()
+      
+      if (now < startTime) {
+        requestAnimationFrame(animate)
+        return
+      }
+      
+      if (now >= endTime) {
+        setDisplayValue(value)
+        return
+      }
+      
+      const progress = (now - startTime) / (duration * 1000)
+      const eased = 1 - Math.pow(1 - progress, 3) // ease-out cubic
+      setDisplayValue(value * eased)
+      
+      requestAnimationFrame(animate)
+    }
+    
+    requestAnimationFrame(animate)
+  }, [value, duration, delay])
+
+  const formattedValue = decimals > 0 
+    ? displayValue.toFixed(decimals)
+    : formatNumber && displayValue >= 1000
+      ? formatLargeNumber(Math.round(displayValue))
+      : Math.round(displayValue).toString()
 
   return (
-    <motion.span className={className} suppressHydrationWarning>
-      {display}
-    </motion.span>
+    <span className={className} suppressHydrationWarning>
+      {formattedValue}
+    </span>
   )
 }
