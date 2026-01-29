@@ -85,7 +85,7 @@ R189/month. That's it. No asterisks, no "starting from", no hidden costs.
 
 ## Free Trial
 
-### 14 Days Free - No Credit Card Required
+### 7 Days Free - No Credit Card Required
 
 **What you get:**
 - Full access to all features
@@ -223,9 +223,6 @@ Yes! No contracts, no cancellation fees. Just let us know and we'll stop billing
 ### What happens to my data if I cancel?
 You can export everything before you cancel. We keep it for 30 days in case you change your mind, then it's permanently deleted.
 
-### Do you offer refunds?
-Yes! If you're not happy in the first 30 days, we'll refund you in full. No questions asked.
-
 ### Can I upgrade/downgrade?
 There's only one plan, so no upgrades needed! Add-ons can be added or removed anytime.
 
@@ -264,7 +261,7 @@ If you have:
 
 **Contact us for custom pricing:**
 - WhatsApp: [Your Number]
-- Email: sales@thebackroom.co.za
+- Email: thebackroom.africa@gmail.com
 - We'll create a plan that fits your needs
 
 **Typical enterprise features:**
@@ -286,7 +283,7 @@ If you have:
 
 ### Current (Launch)
 - R189/month - All features included
-- 14-day free trial
+- 7-day free trial
 - Annual discount available
 
 ### Future (6-12 months)
@@ -339,17 +336,10 @@ Add up to 5 team members to start using it
 Start managing your inventory the easy way
 
 ### Step 5: Subscribe
-After 14 days, choose to continue for R189/month
+After 7 days, choose to continue for R189/month
 
 ---
 
-## Money-Back Guarantee
-
-**Not happy? Get your money back.**
-
-Try The Backroom risk-free for 30 days. If you're not satisfied for any reason, we'll refund your first month in full.
-
-No questions asked. No hard feelings.
 
 **Why we offer this:**
 We're confident you'll love it. And if you don't, you shouldn't pay for it.
