@@ -39,7 +39,7 @@ const solutionsDropdown = [
     href: '#whatsapp',
   },
   {
-    icon: () => <span className="text-xl">📈</span>,
+    icon: Database, // Reuse Database icon instead of emoji
     title: 'Analytics',
     description: 'Track stock levels and trends',
     href: '#analytics',
