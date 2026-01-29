@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 
@@ -74,34 +74,24 @@ export default function FAQ() {
                 </motion.div>
               </button>
               
-              <AnimatePresence initial={false}>
-                {openIndex === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ 
-                      height: 'auto', 
-                      opacity: 1,
-                      transition: {
-                        height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-                        opacity: { duration: 0.25, delay: 0.1 }
-                      }
-                    }}
-                    exit={{ 
-                      height: 0, 
-                      opacity: 0,
-                      transition: {
-                        height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-                        opacity: { duration: 0.2 }
-                      }
-                    }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-6 pb-5 text-gray-400 leading-relaxed">
-                      {faq.answer}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {openIndex === index && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ 
+                    height: 'auto', 
+                    opacity: 1,
+                    transition: {
+                      height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+                      opacity: { duration: 0.25, delay: 0.1 }
+                    }
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-6 pb-5 text-gray-400 leading-relaxed">
+                    {faq.answer}
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           ))}
         </div>
