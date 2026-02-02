@@ -33,9 +33,12 @@ export default function SignInPage() {
         formattedPhone = '+27' + formattedPhone
       }
 
+      // Get API URL from environment or use production
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://thebackroom.onrender.com'
+
       // DEV MODE: Try dev-login first (skips OTP)
       try {
-        const devResponse = await fetch('/api/auth/dev-login', {
+        const devResponse = await fetch(`${API_URL}/api/auth/dev-login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ phoneNumber: formattedPhone }),
@@ -49,10 +52,11 @@ export default function SignInPage() {
         }
       } catch (devError) {
         // Dev endpoint not available, continue with normal OTP flow
+        console.log('Dev login not available, using OTP flow')
       }
 
       // Normal OTP flow
-      const response = await fetch('/api/auth/send-otp', {
+      const response = await fetch(`${API_URL}/api/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phoneNumber: formattedPhone }),

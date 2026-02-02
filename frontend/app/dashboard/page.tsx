@@ -45,16 +45,17 @@ export default function DashboardPage() {
     setIsLoading(true)
     try {
       const token = localStorage.getItem('authToken')
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://thebackroom.onrender.com'
       
       // Fetch inventory
-      const invResponse = await fetch('/api/inventory', {
+      const invResponse = await fetch(`${API_URL}/api/inventory`, {
         headers: { 'Authorization': `Bearer ${token}` },
       })
       const invData = await invResponse.json()
       setInventory(invData.inventory || [])
 
       // Fetch transactions
-      const txResponse = await fetch('/api/transactions', {
+      const txResponse = await fetch(`${API_URL}/api/transactions`, {
         headers: { 'Authorization': `Bearer ${token}` },
       })
       const txData = await txResponse.json()

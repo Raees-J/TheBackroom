@@ -72,7 +72,9 @@ export default function VerifyPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/auth/verify-otp', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://thebackroom.onrender.com'
+      
+      const response = await fetch(`${API_URL}/api/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -110,7 +112,9 @@ export default function VerifyPage() {
     setError('')
 
     try {
-      const response = await fetch('/api/auth/send-otp', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://thebackroom.onrender.com'
+      
+      const response = await fetch(`${API_URL}/api/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phoneNumber }),

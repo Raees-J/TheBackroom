@@ -48,7 +48,9 @@ export default function SupportPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/support/chat', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://thebackroom.onrender.com'
+      
+      const response = await fetch(`${API_URL}/api/support/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: input.trim() }),
