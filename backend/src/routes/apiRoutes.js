@@ -16,12 +16,16 @@ const logger = require('../utils/logger');
 const { requireAuth } = require('../middleware/auth');
 const { dashboardLimiter } = require('../middleware/rateLimiter');
 const { validateQueryParams, validatePagination } = require('../middleware/validation');
+const inventoryRoutes = require('./inventoryRoutes');
 
 // Apply rate limiting to all API routes
 router.use(dashboardLimiter);
 
 // Apply authentication to all API routes
 router.use(requireAuth);
+
+// Mount inventory routes
+router.use('/inventory', inventoryRoutes);
 
 /**
  * GET /api/inventory

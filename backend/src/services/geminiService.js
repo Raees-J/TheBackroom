@@ -182,7 +182,51 @@ function generateResponseMessage(actionResult) {
   }
 }
 
+/**
+ * Analyze image with Gemini Vision
+ * @param {string} imageBase64 - Base64 encoded image
+ * @param {string} mimeType - Image MIME type
+ * @param {string} prompt - Analysis prompt
+ * @returns {Promise<string>} Analysis result
+ */
+async function analyzeImageWithGemini(imageBase64, mimeType, prompt) {
+  try {
+    const client = getClient();
+    
+    if (!client) {
+      throw new Error('Gemini client not initialized');
+    }
+
+    const result = await client.generateContent([
+      {
+        inlineData: {
+          data: imageBase64,
+          mimeType,
+        },
+      },
+      prompt,
+    ]);
+
+    const response = result.response;
+    const text = response.text();
+
+    logger.info('Image analyzed with Gemini', {
+      mimeType,
+      responseLength: text.length,
+    });
+
+    return text;
+  } catch (error) {
+    logger.error('Gemini image analysis failed', {
+      error: error.message,
+      mimeType,
+    });
+    throw error;
+  }
+}
+
 module.exports = {
   parseInventoryMessage,
   generateResponseMessage,
+  analyzeImageWithGemini,
 };

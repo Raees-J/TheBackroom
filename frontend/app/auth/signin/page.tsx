@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight, Shield } from 'lucide-react'
+import { ArrowRight, Shield, Smartphone } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -108,7 +108,7 @@ export default function SignInPage() {
                 Phone Number
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">📱</span>
+                <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   id="phone"
                   type="tel"
@@ -160,7 +160,8 @@ export default function SignInPage() {
               }}
               className="w-full bg-white/5 text-gray-300 px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition flex items-center justify-center space-x-2 border border-white/10"
             >
-              <span>🎨 Demo Mode (Skip Login)</span>
+              <Shield className="w-5 h-5" />
+              <span>Demo Mode (Skip Login)</span>
             </button>
           </form>
 
