@@ -56,6 +56,12 @@ const config = {
     key: process.env.SUPABASE_ANON_KEY,
   },
 
+  // Upstash Redis (FREE: 10,000 commands/day)
+  redis: {
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  },
+
   // Logging
   logLevel: process.env.LOG_LEVEL || 'info',
 };
