@@ -12,7 +12,7 @@ const supabase = createClient(
 );
 
 async function addTestUser() {
-  const phoneNumber = '+27604784145'; // Your number
+  const phoneNumber = '+27604784145'; // Your number: 060 478 4145
   const testOTP = '123456'; // Fixed OTP for testing
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
 

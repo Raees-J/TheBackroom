@@ -8,7 +8,7 @@ INSERT INTO users (
   created_at,
   updated_at
 ) VALUES (
-  '+27839300255',  -- Your phone: 083 930 0255
+  '+27604784145',  -- Your phone: 060 478 4145
   true,            -- Already verified (skip OTP)
   NOW(),
   NOW()
@@ -17,4 +17,4 @@ INSERT INTO users (
   updated_at = NOW();
 
 -- Verify it was added
-SELECT * FROM users WHERE phone_number = '+27839300255';
+SELECT * FROM users WHERE phone_number = '+27604784145';
