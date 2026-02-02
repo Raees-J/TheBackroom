@@ -149,6 +149,19 @@ export default function SignInPage() {
                 </>
               )}
             </button>
+
+            {/* Demo Mode Button */}
+            <button
+              type="button"
+              onClick={() => {
+                const demoToken = 'demo-token-' + Date.now()
+                localStorage.setItem('authToken', demoToken)
+                router.push('/dashboard')
+              }}
+              className="w-full bg-white/5 text-gray-300 px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition flex items-center justify-center space-x-2 border border-white/10"
+            >
+              <span>🎨 Demo Mode (Skip Login)</span>
+            </button>
           </form>
 
           {/* Security Note */}
