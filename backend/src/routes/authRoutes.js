@@ -131,21 +131,15 @@ router.post(
 
 /**
  * POST /api/auth/dev-login
- * DEV ONLY: Login without OTP for development/design work
+ * DEV/TEST: Login without OTP for development/design work
  * 
- * SECURITY: Only works in development mode
- * Remove this endpoint before production!
+ * SECURITY: Remove this endpoint before launching to customers!
  */
 router.post(
   '/dev-login',
   allowOnlyFields(['phoneNumber']),
   validatePhoneNumberMiddleware,
   async (req, res) => {
-    // Only allow in development
-    if (process.env.NODE_ENV === 'production') {
-      return res.status(404).json({ error: 'Not found' });
-    }
-
     try {
       const { phoneNumber } = req.body;
 
@@ -155,6 +149,7 @@ router.post(
       logger.info('Dev login successful', {
         phoneNumber,
         ip: req.ip,
+        env: process.env.NODE_ENV,
       });
 
       res.json({

@@ -19,8 +19,10 @@ export default function SignInPage() {
     try {
       // DEMO MODE: Type "demo" to bypass authentication (frontend only)
       if (phoneNumber.toLowerCase() === 'demo') {
+        setError('') // Clear any previous errors
         const demoToken = 'demo-token-' + Date.now()
         localStorage.setItem('authToken', demoToken)
+        setIsLoading(false)
         router.push('/dashboard')
         return
       }
