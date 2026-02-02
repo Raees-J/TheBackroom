@@ -17,16 +17,6 @@ export default function SignInPage() {
     setIsLoading(true)
 
     try {
-      // DEMO MODE: Type "demo" to bypass authentication (frontend only)
-      if (phoneNumber.toLowerCase() === 'demo') {
-        setError('') // Clear any previous errors
-        const demoToken = 'demo-token-' + Date.now()
-        localStorage.setItem('authToken', demoToken)
-        setIsLoading(false)
-        router.push('/dashboard')
-        return
-      }
-
       // Format phone number (remove spaces, add +27 if needed)
       let formattedPhone = phoneNumber.replace(/\s/g, '')
       if (formattedPhone.startsWith('0')) {
@@ -37,25 +27,6 @@ export default function SignInPage() {
 
       // Get API URL from environment or use production
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://thebackroom.onrender.com'
-
-      // DEV MODE: Try dev-login first (skips OTP)
-      try {
-        const devResponse = await fetch(`${API_URL}/api/auth/dev-login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phoneNumber: formattedPhone }),
-        })
-
-        if (devResponse.ok) {
-          const devData = await devResponse.json()
-          localStorage.setItem('authToken', devData.token)
-          router.push('/dashboard')
-          return
-        }
-      } catch (devError) {
-        // Dev endpoint not available, continue with normal OTP flow
-        console.log('Dev login not available, using OTP flow')
-      }
 
       // Normal OTP flow
       const response = await fetch(`${API_URL}/api/auth/send-otp`, {
@@ -148,20 +119,6 @@ export default function SignInPage() {
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
-            </button>
-
-            {/* Demo Mode Button */}
-            <button
-              type="button"
-              onClick={() => {
-                const demoToken = 'demo-token-' + Date.now()
-                localStorage.setItem('authToken', demoToken)
-                router.push('/dashboard')
-              }}
-              className="w-full bg-white/5 text-gray-300 px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition flex items-center justify-center space-x-2 border border-white/10"
-            >
-              <Shield className="w-5 h-5" />
-              <span>Demo Mode (Skip Login)</span>
             </button>
           </form>
 
