@@ -129,4 +129,54 @@ router.post(
   }
 );
 
+/**
+ * POST /api/auth/dev-login
+ * DEV ONLY: Login without OTP for development/design work
+ * 
+ * SECURITY: Only works in development mode
+ * Remove this endpoint before production!
+ */
+router.post(
+  '/dev-login',
+  allowOnlyFields(['phoneNumber']),
+  validatePhoneNumberMiddleware,
+  async (req, res) => {
+    // Only allow in development
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    try {
+      const { phoneNumber } = req.body;
+
+      // Generate auth token directly (skip OTP)
+      const token = authService.generateToken(phoneNumber);
+
+      logger.info('Dev login successful', {
+        phoneNumber,
+        ip: req.ip,
+      });
+
+      res.json({
+        success: true,
+        token,
+        phoneNumber,
+        expiresIn: '30d',
+        message: 'DEV MODE: Logged in without OTP',
+      });
+    } catch (error) {
+      logger.error('Dev login failed', {
+        error: error.message,
+        phoneNumber: req.body.phoneNumber,
+        ip: req.ip,
+      });
+
+      res.status(500).json({
+        error: 'Login failed',
+        message: 'Please try again later',
+      });
+    }
+  }
+);
+
 module.exports = router;

@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { X } from 'lucide-react'
+import { Package, Activity, Users, Download, X, RefreshCw } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -114,14 +114,14 @@ export default function DashboardPage() {
                 onClick={fetchData}
                 className="glass px-4 py-2 rounded-lg hover:border-brand-green/50 transition flex items-center space-x-2"
               >
-                <span className="text-white">🔄</span>
+                <RefreshCw className="w-4 h-4" />
                 <span className="hidden sm:inline">Refresh</span>
               </button>
               <button
                 onClick={handleExport}
                 className="glass px-4 py-2 rounded-lg hover:border-brand-green/50 transition flex items-center space-x-2"
               >
-                <span>💾</span>
+                <Download className="w-4 h-4" />
                 <span className="hidden sm:inline">Export</span>
               </button>
               <button
@@ -145,7 +145,7 @@ export default function DashboardPage() {
             className="glass rounded-xl p-6 border border-white/10"
           >
             <div className="flex items-center justify-between mb-4">
-              <span className="text-3xl">📦</span>
+              <Package className="w-8 h-8 text-brand-green" />
               <span className="text-sm text-gray-400">Total Items</span>
             </div>
             <div className="text-3xl font-bold">{totalItems.toLocaleString()}</div>
@@ -158,7 +158,7 @@ export default function DashboardPage() {
             className="glass rounded-xl p-6 border border-white/10"
           >
             <div className="flex items-center justify-between mb-4">
-              <span className="text-3xl">📊</span>
+              <Activity className="w-8 h-8 text-brand-green" />
               <span className="text-sm text-gray-400">SKUs</span>
             </div>
             <div className="text-3xl font-bold">{totalSKUs}</div>
@@ -171,7 +171,7 @@ export default function DashboardPage() {
             className="glass rounded-xl p-6 border border-white/10"
           >
             <div className="flex items-center justify-between mb-4">
-              <span className="text-3xl">📝</span>
+              <Users className="w-8 h-8 text-brand-green" />
               <span className="text-sm text-gray-400">Transactions</span>
             </div>
             <div className="text-3xl font-bold">{transactions.length}</div>

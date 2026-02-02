@@ -17,6 +17,14 @@ export default function SignInPage() {
     setIsLoading(true)
 
     try {
+      // DEMO MODE: Type "demo" to bypass authentication (frontend only)
+      if (phoneNumber.toLowerCase() === 'demo') {
+        const demoToken = 'demo-token-' + Date.now()
+        localStorage.setItem('authToken', demoToken)
+        router.push('/dashboard')
+        return
+      }
+
       // Format phone number (remove spaces, add +27 if needed)
       let formattedPhone = phoneNumber.replace(/\s/g, '')
       if (formattedPhone.startsWith('0')) {
@@ -25,7 +33,25 @@ export default function SignInPage() {
         formattedPhone = '+27' + formattedPhone
       }
 
-      // Send OTP request to backend
+      // DEV MODE: Try dev-login first (skips OTP)
+      try {
+        const devResponse = await fetch('/api/auth/dev-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phoneNumber: formattedPhone }),
+        })
+
+        if (devResponse.ok) {
+          const devData = await devResponse.json()
+          localStorage.setItem('authToken', devData.token)
+          router.push('/dashboard')
+          return
+        }
+      } catch (devError) {
+        // Dev endpoint not available, continue with normal OTP flow
+      }
+
+      // Normal OTP flow
       const response = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -89,6 +115,9 @@ export default function SignInPage() {
               </div>
               <p className="text-xs text-gray-500 mt-2">
                 We'll send you a verification code via SMS
+              </p>
+              <p className="text-xs text-brand-green mt-1">
+                💡 Dev tip: Type "demo" to skip authentication
               </p>
             </div>
 

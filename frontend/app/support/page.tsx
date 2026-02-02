@@ -1,7 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Send, Bot, User, Loader, ArrowLeft } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
 interface Message {
@@ -100,10 +100,10 @@ export default function SupportPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <a href="/" className="text-gray-400 hover:text-white transition">
-                <span className="text-xl">←</span>
+                <ArrowLeft className="w-5 h-5" />
               </a>
               <div className="w-10 h-10 bg-brand-green rounded-lg flex items-center justify-center">
-                <span className="text-xl">🤖</span>
+                <Bot className="w-6 h-6 text-brand-darker" />
               </div>
               <div>
                 <h1 className="text-lg font-bold">Support Assistant</h1>
@@ -123,11 +123,13 @@ export default function SupportPage() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
+          <AnimatePresence>
             {messages.map((message) => (
               <motion.div
                 key={message.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
@@ -142,9 +144,11 @@ export default function SupportPage() {
                         : 'bg-white/10'
                     }`}
                   >
-                    <span className="text-lg">
-                      {message.role === 'user' ? '👤' : '🤖'}
-                    </span>
+                    {message.role === 'user' ? (
+                      <User className="w-5 h-5 text-brand-darker" />
+                    ) : (
+                      <Bot className="w-5 h-5 text-brand-green" />
+                    )}
                   </div>
                   <div
                     className={`glass rounded-2xl px-4 py-3 ${
@@ -166,6 +170,7 @@ export default function SupportPage() {
                 </div>
               </motion.div>
             ))}
+          </AnimatePresence>
 
           {isLoading && (
             <motion.div
@@ -175,10 +180,10 @@ export default function SupportPage() {
             >
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-                  <span className="text-lg animate-spin">⏳</span>
+                  <Bot className="w-5 h-5 text-brand-green" />
                 </div>
                 <div className="glass rounded-2xl px-4 py-3">
-                  <span className="text-brand-green">Thinking...</span>
+                  <Loader className="w-5 h-5 text-brand-green animate-spin" />
                 </div>
               </div>
             </motion.div>
@@ -225,7 +230,7 @@ export default function SupportPage() {
               disabled={!input.trim() || isLoading}
               className="bg-brand-green text-brand-darker p-3 rounded-lg hover:glow-green transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="text-lg">📤</span>
+              <Send className="w-5 h-5" />
             </button>
           </div>
           <p className="text-xs text-gray-500 mt-2">
